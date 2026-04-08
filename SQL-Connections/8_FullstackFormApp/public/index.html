@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Form</title>
+</head>
+<body>
+    <form action="/" method="POST">
+        <label for="usename">Username: </label>
+        <input type="text" id="username" name="username">
+        <label for="email">Email: </label>
+        <input type="email" id="email" name="email">
+        <label for="phone">Phone: </label>
+        <input type="tel" id="phone" name="phone">
+        <button type="submit">Submit</button>
+    </form>
+    <ul>
+
+    </ul>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+
+        const form = document.querySelector('form');
+        const usernameInput = document.querySelector('#username');
+        const emailInput = document.querySelector('#email');
+        const phoneInput = document.querySelector('#phone');
+        const ul = document.querySelector('ul');
+        let editingId = null;
+    
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const username = usernameInput.value;
+            const email = emailInput.value;
+            const phone = phoneInput.value;
+
+            const newUser = {
+                username: username,
+                email: email,
+                phone: phone
+            }
+
+            if(editingId) {
+                axios.put(`http://localhost:4000/users/${editingId}`, newUser)
+                .then(() => {
+                    editingId = null;
+                    form.reset();
+                    getAllusers();
+                })
+            } else {
+                axios.post('http://localhost:4000/users', newUser)
+            .then(()=> {
+               console.log("Data inserted from the webpage!");
+               form.reset();
+               getAllusers();
+            })
+            }
+
+            
+        })
+
+        function getAllusers() {
+            axios.get('http://localhost:4000/users')
+            .then(function(res){
+                const users = res.data;
+                ul.innerHTML = "";
+                for (let i = 0; i < users.length; i++) {
+                    displayUsers(users[i]);
+                }
+            })
+        }
+
+        function displayUsers(user) {
+            const li = document.createElement('li');
+            li.textContent = `${user.username} - ${user.email} - ${user.phone}`;
+            ul.appendChild(li);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Remove";
+
+            deleteButton.addEventListener('click', () => {
+                axios.delete(`http://localhost:4000/users/${user.id}`)
+                .then(() => {
+                    ul.removeChild(li);
+                })
+            })
+            li.appendChild(deleteButton);
+
+            const editBtn = document.createElement('button');
+            editBtn.textContent = "Edit";
+            editBtn.addEventListener('click', () => {
+                usernameInput.value = user.username;
+                emailInput.value = user.email;
+                phoneInput.value = user.phone;
+
+                editingId = user.id;
+            })
+            li.appendChild(editBtn);
+        }
+
+        
+
+        getAllusers();
+
+    </script>
+</body>
+</html>
