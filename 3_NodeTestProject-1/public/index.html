@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit review</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div>
+        <h1>Submit your review..!</h1> <br>
+        <form id="form1" action="/" method="POST">
+            <label for="name">Company name: </label>
+            <input type="text" id="name" name="company_name" required> <br>
+            <label for="pros">Pros: </label>
+            <input type="text" id="pros" name="pros" required><br>
+            <label for="cons">Cond: </label>
+            <input type="text" id="cons" name="cons" required><br>
+            <h2>Rate this: </h2> <br>
+            <div class="rating">
+            <input type="radio" id="star5" name="rating" value="5">
+            <label for="star5">★</label>
+
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4">★</label>
+
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3">★</label>
+
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2">★</label>
+
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1">★</label>
+        </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div>
+        <h1>Search company reviews</h1>
+        <form id="form2" action="/" method="GET">
+        <lable for="search">Company name: </label>
+        <input type="text" id="search" name="company_name" required>
+        <button type="submit">Search</button>
+    </form>
+        <ul>
+
+        </ul>
+    </div>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
