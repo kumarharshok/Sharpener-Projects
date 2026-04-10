@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>        
+    
+    <nav id="navbar">Expense Tracker</nav>
+
+    <div id="container">
+    
+
+    <div id="cont-form">
+        <h1>Add your expense</h1>
+        <form >
+            <label for="amount">Amount: </label>
+            <input type="number" id="amount" name="amount" placeholder="Enter your amount!">
+            <label for="des">Description: </label>
+            <input type="text" id="des" name="description" placeholder="Write about your spent?">
+            <label for="category">Category: </label>
+            <select name="category" id="category">
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="bill">Electricity and Gas bill</option>
+                <option value="rent">House rent</option>
+                <option value="weekend">Parties</option>
+                <option value="other">Others</option>
+            </select>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+    <div id="expense-container">
+        <h1>Expense List</h1>
+        <ul></ul>
+    </div>
+    </div>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const form = document.querySelector('form');
+        const amountInput = document.querySelector('#amount');
+        const descInput = document.querySelector('#des');
+        const categoryInput = document.querySelector('#category');
+        const ul = document.querySelector('ul');
+
+        const API_URL = "http://localhost:4000/dashboard";
+
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        if(!user) {
+            window.location.href = "login.html"
+        }
+        const userId =user.id;
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const newUser = {
+                amount: amountInput.value,
+                description: descInput.value,
+                category: categoryInput.value,
+                userId: userId
+            }
+
+            axios.post(API_URL, newUser)
+            .then((res) => {
+                alert(res.data.message);
+                form.reset();
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            })
+        }
+
+        form.addEventListener('submit', handleFormSubmit);
+
+        function getAllExpenses() {
+            axios.get(`${API_URL}/${userId}`)
+            .then((res) => {
+                const userExpense = res.data.data;
+                console.log(userExpense);
+
+                ul.innerHTML="";
+
+                for(let i = 0; i < userExpense.length; i++) {
+                    const data = userExpense[i];
+                    const li = document.createElement('li');
+
+                    const delteBtn = document.createElement('button');
+                    delteBtn.textContent = "Delete";
+                    delteBtn.className = "delete-btn";
+
+                    delteBtn.addEventListener('click', () => {
+                        axios.delete(`${API_URL}/${data.id}`)
+                        .then(() => {
+                            getAllExpenses();
+                        })
+                        .catch((error) => {
+                            alert(error.response.data.message);
+                        })
+                    })
+                    li.innerHTML = `<div class="expense-text">
+                        <span class="amount">₹ ${data.amount}</span>
+                            <span>${data.description}</span>
+                            <span>${data.category}</span>
+                        </div>
+                    `
+                    ul.appendChild(li);
+                    li.appendChild(delteBtn);
+
+                    
+                }
+            })
+            
+        }
+        window.addEventListener("DOMContentLoaded", getAllExpenses);
+
+    </script>
+</body>
+</html>
