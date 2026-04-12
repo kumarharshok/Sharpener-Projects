@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>        
+    
+    <nav id="navbar">Expense Tracker <button onclick="buyPremium()" id="buy-premium">Buy Premium</button></nav>
+
+    <div id="container">
+    
+
+    <div id="cont-form">
+        <h1>Add your expense</h1>
+        <form >
+            <label for="amount">Amount: </label>
+            <input type="number" id="amount" name="amount" placeholder="Enter your amount!">
+            <label for="des">Description: </label>
+            <input type="text" id="des" name="description" placeholder="Write about your spent?">
+            <label for="category">Category: </label>
+            <select name="category" id="category">
+                <option value="food">Food</option>
+                <option value="transport">Transport</option>
+                <option value="bill">Electricity and Gas bill</option>
+                <option value="rent">House rent</option>
+                <option value="weekend">Parties</option>
+                <option value="other">Others</option>
+            </select>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+    <div id="expense-container">
+        <h1>Expense List</h1>
+        <ul></ul>
+    </div>
+    
+    </div>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    <script>
+        const form = document.querySelector('form');
+        const amountInput = document.querySelector('#amount');
+        const descInput = document.querySelector('#des');
+        const categoryInput = document.querySelector('#category');
+        const ul = document.querySelector('ul');
+        const premiumBtn = document.querySelector('#buy-premium');
+        const navBar = document.querySelector('nav');
+        const mainContainer = document.querySelector('#container');
+
+        const API_URL = "http://localhost:4000/dashboard";
+
+
+
+        const user = JSON.parse(localStorage.getItem("user"));
+
+
+
+        if(!user) {
+            window.location.href = "login.html"
+        }
+        const userId =user.id;
+
+        if(user.isPrimeuser) {
+            premiumBtn.style.display = "none";
+            const premiumText = document.createElement('p');
+            premiumText.textContent = "You are a premium user🎉";
+            navBar.appendChild(premiumText);
+
+
+            const leadboardBtn = document.createElement('button');
+            leadboardBtn.className = "lead-btn";
+            leadboardBtn.textContent = "Leadboard"
+
+            navBar.appendChild(leadboardBtn);
+
+            
+            
+
+            leadboardBtn.addEventListener('click', () => {
+
+                const exisitngLeadboard = document.querySelector('.leadboard');
+                if(exisitngLeadboard) {
+                    exisitngLeadboard.remove();
+                }
+                axios.get(`${API_URL}`)
+                .then((res) => {
+                    const data = res.data;
+                    console.log(data);
+                    const containerDiv = document.createElement('div');
+                    containerDiv.className = "leadboard";
+                    containerDiv.innerHTML = "<h1>Leadboard</h1>";
+                    mainContainer.appendChild(containerDiv);
+
+                    const ul = document.createElement('ul');
+                        ul.className = "leadboard-ul";
+                        ul.innerHTML = "";
+                        containerDiv.appendChild(ul);
+                        
+                    for(let i = 0; i < data.length; i++) {
+                        const user = data[i];
+                        const li = document.createElement('li');
+                        li.className="leadboard-ul";
+                        li.innerHTML = `
+                        <div class="expense-text">
+                        <span class="amount">Rank ${i+1}</span>
+                            <span>${user.user.name}</span>
+                            <span>${user.total}</span>
+                        </div>
+                        `
+                        ul.appendChild(li);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            })
+
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const newUser = {
+                amount: amountInput.value,
+                description: descInput.value,
+                category: categoryInput.value,
+                userId: userId
+            }
+
+            axios.post(API_URL, newUser)
+            .then((res) => {
+                alert(res.data.message);
+                form.reset();
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            })
+        }
+
+        form.addEventListener('submit', handleFormSubmit);
+
+        function getAllExpenses() {
+            axios.get(`${API_URL}/${userId}`)
+            .then((res) => {
+                const userExpense = res.data.data;
+                console.log(userExpense);
+
+                ul.innerHTML="";
+
+                for(let i = 0; i < userExpense.length; i++) {
+                    const data = userExpense[i];
+                    const li = document.createElement('li');
+
+                    const delteBtn = document.createElement('button');
+                    delteBtn.textContent = "Delete";
+                    delteBtn.className = "delete-btn";
+
+                    delteBtn.addEventListener('click', () => {
+                        axios.delete(`${API_URL}/${data.id}`)
+                        .then(() => {
+                            getAllExpenses();
+                        })
+                        .catch((error) => {
+                            alert(error.response.data.message);
+                        })
+                    })
+                    li.innerHTML = `<div class="expense-text">
+                        <span class="amount">₹ ${data.amount}</span>
+                            <span>${data.description}</span>
+                            <span>${data.category}</span>
+                        </div>
+                    `
+                    ul.appendChild(li);
+                    li.appendChild(delteBtn);
+
+                    
+                }
+            })
+            
+        }
+
+        function buyPremium() {
+            axios.post(`${API_URL}/purchase/${userId}`)
+            .then((res) => {
+                alert(res.data.message);
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+            })
+        }
+
+    
+
+
+        window.addEventListener("DOMContentLoaded", getAllExpenses);
+
+
+  
+    </script>
+</body>
+</html>
