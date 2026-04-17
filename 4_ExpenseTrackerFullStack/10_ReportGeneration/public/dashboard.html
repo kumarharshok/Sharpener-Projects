@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+    <nav id="navbar" style="
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 15px;
+    margin: 0px;
+    box-sizing: border-box;">Expense Tracker <p id="premium-heading">⭐ Premium User</p><button onclick="buyPremium()"
+            id="buy-premium" style="margin-right: -78%;">Buy Premium</button><button id="logout">Logout</button>
+    </nav>
+
+    <div id="container">
+        <div id="twoForms">
+            <div id="cont-form">
+                <h1 id="welcome-name" style=" margin: 0;margin-bottom: 20px; color: darkseagreen;"></h1>
+                <h3 style="margin: 0; margin-bottom: 15px; font-weight: 600;">Add your
+                    expense</h3>
+                <form>
+                    <label for="amount">Amount: </label>
+                    <input type="number" id="amount" name="amount" placeholder="Enter your amount!">
+                    <label for="des">Description: </label>
+                    <input type="text" id="des" name="description" placeholder="Write about your spent?">
+                    <button type="submit" style="background: linear-gradient(135deg, #DC1C13, #EA4C46);">Add</button>
+                </form>
+            </div>
+            <div id="income-con">
+                <h3 style="margin: 0; margin-bottom: 15px; font-weight: 600;">Add your
+                    income</h3>
+                <form id="income">
+                    <label for="income-amount">Amount: </label>
+                    <input type="number" id="income-amount" name="amount" placeholder="Enter your amount!">
+                    <label for="inc-des">Description: </label>
+                    <input type="text" id="inc-des" name="description" placeholder="Write about your income source?">
+                    <button type="submit" style="background: linear-gradient(135deg, #2EB62C, #57C84D);">Add</button>
+                </form>
+            </div>
+        </div>
+        <div id="expense-container">
+            <h1>Expense List</h1>
+            <ul></ul>
+        </div>
+
+        <div id="right-column">
+            <div id="summary">
+                <h1 style="    margin-top: 0;font-size: 30px;margin-bottom: 0;">🔥 Summary Section</h1>
+                <div id="filters" style="display: flex; gap: 18px;">
+                    <button onclick="setFilter('all')" style="border-radius: 10px">All</button>
+                    <button onclick="setFilter('daily')" style="border-radius: 10px">Daily</button>
+                    <button onclick="setFilter('weekly')" style="border-radius: 10px">Weekly</button>
+                    <button onclick="setFilter('monthly')" style="border-radius: 10px">Monthly</button>
+                    <button onclick="downloadCSV()">Download Report</button>
+
+                    
+                </div>
+                <span>Total Income : <span id="total-income"></span></span>
+                <span>Total Expenses : <span id="total-expense"></span></span>
+                <span>Balance : <span id="balance"></span>
+                
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+    <script src="dashboard.js"></script>
+
+
+</body>
+
+</html>

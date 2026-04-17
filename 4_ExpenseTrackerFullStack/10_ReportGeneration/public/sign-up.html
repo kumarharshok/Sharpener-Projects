@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="sign-up.css">
+</head>
+<body>
+
+    
+
+    <div id="cont-form">
+        <form>
+            <h2 style="display: flex; justify-content: center; margin: 0;">Create Account</h2>
+            <p>Join us and track your expenses</p>
+            <label for="name">Name </label>
+            <input type="text" id="name" name="name" placeholder="Enter your fullname" required>
+            <label for="email">Email </label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <label for="password">Password </label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <p>Already have an account? <a href="log-in.html">Login</a></p>
+    </div>
+    <div id="cont-heading">
+        <p>This app is for tracking your expenses, feel free to sign up it's free!</p>
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const nameInput = document.querySelector('#name');
+        const emailInput = document.querySelector('#email');
+        const passwordInput = document.querySelector('#password');
+        const confirmPasswordInput = document.querySelector('#confirmPassword');
+
+        const API_URL = "http://localhost:4000/sign-up"
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            if(passwordInput.value !== confirmPasswordInput.value) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            const newUser = {
+                name: nameInput.value,
+                email: emailInput.value,
+                password: passwordInput.value,
+                isPrimeuser: false
+            }
+
+            axios.post(API_URL, newUser)
+            .then((res) => {
+                // alert(res.data.message);
+                form.reset();
+                const p = document.createElement('p');
+                p.textContent = "User registered successfully!";
+                p.style= "color: green";
+                form.appendChild(p);
+            })
+            .catch((error) => {
+                alert(error.response.data.message);
+                console.log("Error during signup from the webpage: ", error);
+            })
+        }
+
+        form.addEventListener('submit', handleFormSubmit);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+</html>
