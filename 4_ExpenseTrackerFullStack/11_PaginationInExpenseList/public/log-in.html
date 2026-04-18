@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Log-in</title>
+    <link rel="stylesheet" href="sign-up.css" />
+</head>
+
+<body>
+    <div id="cont-form">
+        <form>
+            <h2 style="display: flex; justify-content: center; margin: 0;">Welcome
+                Back</h2>
+            <p>Please login to continue</p>
+            <label for="email">Email </label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required />
+            <label for="password">Password </label>
+            <div style="position: relative">
+                <input type="password" id="password" name="password" placeholder="Enter your password" required />
+                <span id="togglePass" style="position: absolute; right: 10px; top: 8px; cursor: pointer">👁️</span>
+            </div>
+            <button type="submit">Login</button>
+            <button type="button" id="forget-pass">Forget Password</button>
+        </form>
+
+        <p>Don't have an account? <a href="sign-up.html">Sign Up</a></p>
+    </div>
+    <div id="cont-heading">
+        <p>
+            This app is for tracking your expenses, feel free to sign up
+            it's free!
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        const form = document.querySelector("form");
+        const emailInput = document.querySelector("#email");
+        const passwordInput = document.querySelector("#password");
+        const forgetPassBtn = document.querySelector("#forget-pass");
+
+        const API_URL = "http://localhost:4000/log-in";
+
+        forgetPassBtn.addEventListener("click", () => {
+            window.location.href = "forgetPassword.html";
+        });
+
+        const togglePass = document.getElementById("togglePass");
+
+        togglePass.addEventListener("click", () => {
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        });
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const newUser = {
+                email: emailInput.value,
+                password: passwordInput.value,
+            };
+
+            axios
+                .post(API_URL, newUser)
+                .then((res) => {
+                    const p = document.createElement("p");
+                    p.textContent = "User logged in successfully!";
+                    p.style = "color: green";
+                    form.appendChild(p);
+                    localStorage.setItem("user", JSON.stringify(res.data.user));
+                    window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    if (error.response) {
+                        alert(error.response.data.message);
+                    } else {
+                        alert("Something went wrong!");
+                    }
+                });
+        }
+
+        form.addEventListener("submit", handleFormSubmit);
+    </script>
+</body>
+
+</html>
