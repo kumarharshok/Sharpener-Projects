@@ -1,0 +1,134 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CONTAINER */
+#chat-container {
+  width: 100%;
+  max-width: 500px;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* HEADER */
+#chat-header {
+  padding: 15px;
+  background: rgba(0,0,0,0.3);
+  color: #00e6e6;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* MESSAGE AREA */
+#chat-message-area {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* COMMON MESSAGE */
+.sent, .receive {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 15px;
+  font-size: 14px;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+/* RECEIVED */
+.receive {
+  align-self: flex-start;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-left: 3px solid #00e6e6;
+}
+
+/* SENT */
+.sent {
+  align-self: flex-end;
+  background: rgba(0, 230, 230, 0.2);
+  color: #00ffff;
+  border-right: 3px solid #00ffff;
+}
+
+/* TIMESTAMP */
+.sent span,
+.receive span {
+  display: block;
+  font-size: 10px;
+  margin-top: 6px;
+  text-align: right;
+  opacity: 0.6;
+}
+
+/* INPUT AREA */
+#chat-input-area {
+  display: flex;
+  padding: 10px;
+  background: rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+#chat-input-area input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 25px;
+  outline: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* PLACEHOLDER COLOR */
+#chat-input-area input::placeholder {
+  color: #ccc;
+}
+
+/* BUTTON */
+#chat-input-area button {
+  margin-left: 10px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(45deg, #00e6e6, #00ffff);
+  color: black;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+#chat-input-area button:hover {
+  transform: scale(1.05);
+}
+
+/* SCROLLBAR (cool look 😎) */
+#chat-message-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-message-area::-webkit-scrollbar-thumb {
+  background: #00e6e6;
+  border-radius: 10px;
+}
